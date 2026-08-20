@@ -1,0 +1,6 @@
+{
+  "name": "Protein Threading: Finding the Right Fold",
+  "description": "An immersive, interactive educational platform explaining protein threading and fold recognition in structural biology.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
