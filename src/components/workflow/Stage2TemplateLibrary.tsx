@@ -8,9 +8,13 @@ import { sound } from '../../utils/audio';
 export const Stage2TemplateLibrary: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<StructuralTemplate>(STRUCTURAL_TEMPLATES[0]);
 
+  const activeTemplate = selectedTemplate || STRUCTURAL_TEMPLATES[0];
+
   const handleSelect = (tmpl: StructuralTemplate) => {
-    setSelectedTemplate(tmpl);
-    sound.playClick(600);
+    if (tmpl) {
+      setSelectedTemplate(tmpl);
+      sound.playClick(600);
+    }
   };
 
   return (
@@ -39,7 +43,7 @@ export const Stage2TemplateLibrary: React.FC = () => {
 
           <div className="space-y-2.5">
             {STRUCTURAL_TEMPLATES.map((tmpl) => {
-              const isSelected = selectedTemplate.id === tmpl.id;
+              const isSelected = activeTemplate.id === tmpl.id;
               return (
                 <button
                   key={tmpl.id}
@@ -76,7 +80,7 @@ export const Stage2TemplateLibrary: React.FC = () => {
         <div className="lg:col-span-6 space-y-4">
           <div className="relative rounded-2xl overflow-hidden glass-panel border border-[var(--glass-border)]">
             <ProteinViewer3D
-              foldType={selectedTemplate.visualType}
+              foldType={activeTemplate.visualType}
               colorTheme="cyan"
               showThreadingFlow={false}
               height={260}
@@ -87,35 +91,35 @@ export const Stage2TemplateLibrary: React.FC = () => {
 
           <div className="p-4 rounded-2xl glass-card border-[var(--glass-border)] space-y-3">
             <div className="flex items-center justify-between">
-              <h5 className="font-bold text-[#00FFFF] font-display text-base glow-text-cyan">{selectedTemplate.name}</h5>
-              <span className="text-xs font-mono text-slate-300">{selectedTemplate.totalResidues} Cα positions</span>
+              <h5 className="font-bold text-[#00FFFF] font-display text-base glow-text-cyan">{activeTemplate.name}</h5>
+              <span className="text-xs font-mono text-slate-300">{activeTemplate.totalResidues} Cα positions</span>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">{selectedTemplate.description}</p>
+            <p className="text-xs text-slate-300 leading-relaxed">{activeTemplate.description}</p>
 
             {/* Secondary Structure Composition Bar */}
             <div className="space-y-1.5 pt-1">
               <div className="flex justify-between text-xs font-mono text-slate-300">
                 <span>Secondary Structure Composition</span>
                 <span>
-                  α: {selectedTemplate.secondaryComposition.helix}% • β:{' '}
-                  {selectedTemplate.secondaryComposition.sheet}% • Loop:{' '}
-                  {selectedTemplate.secondaryComposition.loop}%
+                  α: {activeTemplate.secondaryComposition.helix}% • β:{' '}
+                  {activeTemplate.secondaryComposition.sheet}% • Loop:{' '}
+                  {activeTemplate.secondaryComposition.loop}%
                 </span>
               </div>
               <div className="h-2 rounded-full bg-black/40 border border-[var(--glass-border)] flex overflow-hidden">
                 <div
-                  style={{ width: `${selectedTemplate.secondaryComposition.helix}%` }}
+                  style={{ width: `${activeTemplate.secondaryComposition.helix}%` }}
                   className="bg-[#00FFFF] h-full"
                   title="Alpha Helices"
                 />
                 <div
-                  style={{ width: `${selectedTemplate.secondaryComposition.sheet}%` }}
+                  style={{ width: `${activeTemplate.secondaryComposition.sheet}%` }}
                   className="bg-[#FF00FF] h-full"
                   title="Beta Sheets"
                 />
                 <div
-                  style={{ width: `${selectedTemplate.secondaryComposition.loop}%` }}
+                  style={{ width: `${activeTemplate.secondaryComposition.loop}%` }}
                   className="bg-slate-500 h-full"
                   title="Loops"
                 />
@@ -126,11 +130,11 @@ export const Stage2TemplateLibrary: React.FC = () => {
             <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
               <div className="p-2 rounded-lg glass-subtle border-[var(--glass-border)] flex items-center justify-between">
                 <span className="text-[#FFBF00]">Buried Core Sites:</span>
-                <span className="font-bold text-white">{selectedTemplate.coreResidues}</span>
+                <span className="font-bold text-white">{activeTemplate.coreResidues}</span>
               </div>
               <div className="p-2 rounded-lg glass-subtle border-[var(--glass-border)] flex items-center justify-between">
                 <span className="text-[#00FFFF]">Solvent Exposed Sites:</span>
-                <span className="font-bold text-white">{selectedTemplate.surfaceResidues}</span>
+                <span className="font-bold text-white">{activeTemplate.surfaceResidues}</span>
               </div>
             </div>
           </div>

@@ -24,10 +24,8 @@ export const Stage3ThreadingSimulation: React.FC = () => {
     { id: 12, aa: 'R12', name: 'Arg', type: 'positive', targetZone: 'Hydrated Surface', targetCoord: { x: 340, y: 145 }, isCore: false, match: 'favorable' },
   ];
 
-  const currentStep = Math.min(
-    Math.floor((threadProgress / 100) * threadingPositions.length),
-    threadingPositions.length - 1
-  );
+  const rawIndex = Math.floor((threadProgress / 100) * threadingPositions.length);
+  const currentStep = Math.max(0, Math.min(isNaN(rawIndex) ? 0 : rawIndex, threadingPositions.length - 1));
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -65,7 +63,7 @@ export const Stage3ThreadingSimulation: React.FC = () => {
     sound.playClick(400);
   };
 
-  const activeResidue = threadingPositions[currentStep];
+  const activeResidue = threadingPositions[currentStep] || threadingPositions[0];
 
   return (
     <div className="space-y-6">
@@ -247,7 +245,7 @@ export const Stage3ThreadingSimulation: React.FC = () => {
           <div className="flex items-center gap-3">
             <div
               className={`p-2.5 rounded-xl border ${
-                activeResidue.isCore
+                activeResidue?.isCore
                   ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
                   : 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
               }`}
@@ -257,7 +255,7 @@ export const Stage3ThreadingSimulation: React.FC = () => {
             <div>
               <span className="text-xs font-mono text-slate-400">Active Threading Assessment</span>
               <h5 className="font-bold text-white text-base font-display">
-                Residue {activeResidue.name} #{activeResidue.id} ➔ {activeResidue.targetZone}
+                Residue {activeResidue?.name} #{activeResidue?.id} ➔ {activeResidue?.targetZone}
               </h5>
             </div>
           </div>

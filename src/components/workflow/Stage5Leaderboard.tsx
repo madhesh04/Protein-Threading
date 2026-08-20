@@ -69,11 +69,13 @@ export const Stage5Leaderboard: React.FC = () => {
   ];
 
   const handleSelect = (idx: number) => {
-    setSelectedRank(idx);
-    sound.playClick(600 - idx * 50);
+    const nextIdx = Math.max(0, Math.min(idx, candidates.length - 1));
+    setSelectedRank(nextIdx);
+    sound.playClick(600 - nextIdx * 50);
   };
 
-  const activeCandidate = candidates[selectedRank];
+  const safeRank = Math.max(0, Math.min(selectedRank, candidates.length - 1));
+  const activeCandidate = candidates[safeRank] || candidates[0];
 
   return (
     <div className="space-y-6">

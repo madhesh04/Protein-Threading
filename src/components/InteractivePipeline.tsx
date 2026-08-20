@@ -5,6 +5,7 @@ import { Stage3ThreadingSimulation } from './workflow/Stage3ThreadingSimulation'
 import { Stage4ScoringDashboard } from './workflow/Stage4ScoringDashboard';
 import { Stage5Leaderboard } from './workflow/Stage5Leaderboard';
 import { Stage6ModelRefinement } from './workflow/Stage6ModelRefinement';
+import { ErrorBoundary } from './ErrorBoundary';
 import { ArrowLeft, ArrowRight, Sparkles, Workflow, CheckCircle2, Play, Pause } from 'lucide-react';
 import { sound } from '../utils/audio';
 
@@ -20,24 +21,39 @@ export const InteractivePipeline: React.FC = () => {
     { num: 6, label: 'Build 3D Model', tag: 'Final Fold', component: <Stage6ModelRefinement /> },
   ];
 
+  const scrollToWorkflow = () => {
+    const el = document.getElementById('workflow');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
+
   const handleStageClick = (idx: number) => {
-    setActiveStage(idx);
-    sound.playClick(450 + idx * 60);
+    const nextIdx = Math.max(0, Math.min(idx, stages.length - 1));
+    setActiveStage(nextIdx);
+    sound.playClick(450 + nextIdx * 60);
+    scrollToWorkflow();
   };
 
   const handlePrev = () => {
     if (activeStage > 0) {
-      setActiveStage(activeStage - 1);
+      const prevIdx = activeStage - 1;
+      setActiveStage(prevIdx);
       sound.playClick(400);
+      scrollToWorkflow();
     }
   };
 
   const handleNext = () => {
     if (activeStage < stages.length - 1) {
-      setActiveStage(activeStage + 1);
+      const nextIdx = activeStage + 1;
+      setActiveStage(nextIdx);
       sound.playClick(600);
+      scrollToWorkflow();
     }
   };
+
+  const safeStageIndex = Math.max(0, Math.min(activeStage, stages.length - 1));
 
   return (
     <section id="workflow" className="py-20 bg-[#0c0822] relative border-t border-slate-800/80">
@@ -64,8 +80,8 @@ export const InteractivePipeline: React.FC = () => {
         {/* 6-Stage Navigation Bar / Stepper */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mb-8">
           {stages.map((stage, idx) => {
-            const isActive = activeStage === idx;
-            const isCompleted = idx < activeStage;
+            const isActive = safeStageIndex === idx;
+            const isCompleted = idx < safeStageIndex;
 
             return (
               <button
@@ -110,7 +126,9 @@ export const InteractivePipeline: React.FC = () => {
 
         {/* Active Stage Body Container */}
         <div className="p-6 sm:p-8 rounded-3xl glass-panel space-y-8">
-          {stages[activeStage].component}
+          <ErrorBoundary key={safeStageIndex}>
+            {stages[safeStageIndex].component}
+          </ErrorBoundary>
 
           {/* Stepper Footer Controls */}
           <div className="flex items-center justify-between pt-6 border-t border-[var(--glass-border)]">

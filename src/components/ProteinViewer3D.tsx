@@ -357,7 +357,7 @@ export const ProteinViewer3D: React.FC<ProteinViewer3DProps> = ({
         proteinGroup.rotation.x = Math.sin(elapsedTime * 0.4) * 0.15;
       }
 
-      if (particlesRef.current) {
+      if (particlesRef.current?.geometry?.attributes?.position?.array) {
         const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
         for (let i = 0; i < positions.length / 3; i++) {
           positions[i * 3 + 1] += 0.04;
